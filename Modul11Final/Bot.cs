@@ -10,16 +10,27 @@ using Telegram.Bot.Exceptions;
 using Telegram.Bot.Polling;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
+using Modul11Final.Controllers;
 
 namespace Modul11Final
 {
     internal class Bot : BackgroundService
     {
         private ITelegramBotClient _telegramClient;
+        private ButtonController _buttonController;
+        private TextMessageController _textMessageController;
+        private DefaultMessageController _defaultMessageController;
 
-        public Bot(ITelegramBotClient telegramClient)
+        public Bot(ITelegramBotClient telegramClient, 
+            ButtonController buttonController,
+            TextMessageController textMessageController, 
+            DefaultMessageController defaultMessageController)
         {
             _telegramClient = telegramClient;
+            _buttonController = buttonController;
+            _textMessageController = textMessageController;
+            _defaultMessageController = defaultMessageController;
+
         }
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
@@ -35,19 +46,26 @@ namespace Modul11Final
 
         async Task HandleUpdateAsync(ITelegramBotClient botClient, Update update, CancellationToken cancellationToken)
         {
-            //  Обрабатываем нажатия на кнопки  из Telegram Bot API: https://core.telegram.org/bots/api#callbackquery
+            //  Обрабатываем нажатия на кнопки
             if (update.Type == UpdateType.CallbackQuery)
             {
-                await _telegramClient.SendTextMessageAsync(update.CallbackQuery.From.Id, $"Данный тип сообщений не поддерживается. Пожалуйста отправьте текст.", cancellationToken: cancellationToken);
+                await _buttonController.Handle(update.CallbackQuery, cancellationToken);
                 return;
             }
 
-            // Обрабатываем входящие сообщения из Telegram Bot API: https://core.telegram.org/bots/api#message
+            // Обрабатываем входящие сообщения
             if (update.Type == UpdateType.Message)
             {
-                Console.WriteLine($"Получено сообщение {update.Message.Text}");
-                await _telegramClient.SendTextMessageAsync(update.Message.Chat.Id, $"Вы отправили сообщение {update.Message.Text}", cancellationToken: cancellationToken);
-                return;
+                //Console.WriteLine($"Получено сообщение {update.Message.Text}");
+                switch (update.Message!.Type)
+                {
+                    case MessageType.Text:
+                        await _textMessageController.Handle(update.Message, cancellationToken);
+                        return;
+                    default:
+                        await _defaultMessageController.Handle(update.Message, cancellationToken);
+                        return;
+                }
             }
         }
 
@@ -61,10 +79,7 @@ namespace Modul11Final
                 _ => exception.ToString()
             };
 
-            // Выводим в консоль информацию об ошибке
             Console.WriteLine(errorMessage);
-
-            // Задержка перед повторным подключением
             Console.WriteLine("Ожидаем 10 секунд перед повторным подключением.");
             Thread.Sleep(10000);
 

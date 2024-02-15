@@ -3,6 +3,8 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Modul11Final.Controllers;
+using Modul11Final.Services;
 using Telegram.Bot;
 
 namespace Modul11Final
@@ -27,10 +29,16 @@ namespace Modul11Final
 
         static void ConfigureServices(IServiceCollection services)
         {
+            services.AddSingleton<IStorage, MemoryStorage>();
+            services.AddTransient<ButtonController>();
+            services.AddTransient<TextMessageController>();
+            services.AddTransient<DefaultMessageController>();
+
             // Регистрируем объект TelegramBotClient c токеном подключения
             services.AddSingleton<ITelegramBotClient>(provider => new TelegramBotClient("6970731421:AAGJ3U6SaaDH_2EA_kfxMfQ9D9UYHRH28cc"));
             // Регистрируем постоянно активный сервис бота
             services.AddHostedService<Bot>();
+
         }
     }
 }
