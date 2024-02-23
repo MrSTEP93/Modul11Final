@@ -31,25 +31,19 @@ namespace Modul11Final.Controllers
             {
                 case "/start":
                     // Объект, представляющий кноки
-                    //var buttons = new List<InlineKeyboardButton[]>();
-                    //buttons.Add(new[]
+                    Buttons.InitButtons(out List<InlineKeyboardButton> buttons, ref Buttons.mainButtons);
+                    
+                    //var buttons = new List<InlineKeyboardButton>();
+                    //foreach (var button in Buttons.mainButtons)
                     //{
-                    //    InlineKeyboardButton.WithCallbackData($"Считаем символы" , $"CountMessageLength"),
-                    //    InlineKeyboardButton.WithCallbackData($"Складываем числа" , $"SummNumbers")
-                    //});
-
-                    var buttons = new List<InlineKeyboardButton>();
-                    foreach (var button in Buttons.mainButtons)
-                    {
-                        buttons.Add(InlineKeyboardButton.WithCallbackData(button.Text, button.Command));
-                    }
-
+                    //    buttons.Add(InlineKeyboardButton.WithCallbackData(button.Text, button.Command));
+                    //}
 
                     // передаем кнопки вместе с сообщением (параметр ReplyMarkup)
                     await _telegramClient.SendTextMessageAsync(message.Chat.Id, $"<b> Наш бот умеет:</b>{Environment.NewLine}" +
                         $"* Считать количество символов в полученном сообщении; {Environment.NewLine}" +
                         $"* Вычислить сумму чисел, которые вы пришлете.{Environment.NewLine}" +
-                        $"<b>Выберите желаемое действие:</b>{Environment.NewLine}",
+                        $"{Environment.NewLine}<b>Выберите желаемое действие:</b>",
                         cancellationToken: ct, parseMode: ParseMode.Html, replyMarkup: new InlineKeyboardMarkup(buttons));
                     break;
                 case "CountMessageLength":

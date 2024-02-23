@@ -33,21 +33,15 @@ namespace Modul11Final.Controllers
             _memoryStorage.GetSession(callbackQuery.From.Id).Command = callbackQuery.Data;
 
             // Генерим информационное сообщение
-            string commandText = String.Empty;
-            foreach (var button in Buttons.mainButtons)
-            {
-                if (callbackQuery.Data == button.Command)
-                {
-                    commandText = button.Text;
-                }
-            }
-
-            //string commandText = callbackQuery.Data switch
+            string commandText = Buttons.GetTextByCommand(callbackQuery.Data, ref Buttons.mainButtons);
+            
+            //foreach (var button in Buttons.mainButtons)
             //{
-            //    "CountMessageLength" => "Считаем символы",
-            //    "SummNumbers" => "Складываем числа",
-            //    _ => String.Empty
-            //};
+            //    if (callbackQuery.Data == button.Command)
+            //    {
+            //        commandText = button.Text;
+            //    }
+            //}
 
             // Отправляем в ответ уведомление о выборе
             await _telegramClient.SendTextMessageAsync(callbackQuery.From.Id,
