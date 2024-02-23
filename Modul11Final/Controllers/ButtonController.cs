@@ -34,14 +34,6 @@ namespace Modul11Final.Controllers
 
             // Генерим информационное сообщение
             string commandText = Buttons.GetTextByCommand(callbackQuery.Data, ref Buttons.mainButtons);
-            
-            //foreach (var button in Buttons.mainButtons)
-            //{
-            //    if (callbackQuery.Data == button.Command)
-            //    {
-            //        commandText = button.Text;
-            //    }
-            //}
 
             // Отправляем в ответ уведомление о выборе
             await _telegramClient.SendTextMessageAsync(callbackQuery.From.Id,
