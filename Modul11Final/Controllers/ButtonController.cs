@@ -33,12 +33,13 @@ namespace Modul11Final.Controllers
             _memoryStorage.GetSession(callbackQuery.From.Id).Command = callbackQuery.Data;
 
             // Генерим информационное сообщение
-            string commandText = Buttons.GetTextByCommand(callbackQuery.Data, ref Buttons.mainButtons);
+            string commandText = Buttons.GetTextByCommand(callbackQuery.Data, ref Buttons.mainButtons, out string commandHint);
 
             // Отправляем в ответ уведомление о выборе
             await _telegramClient.SendTextMessageAsync(callbackQuery.From.Id,
                 $"Выбрана команда <b>\"{commandText}\"</b>." +
-                $"{Environment.NewLine}Вы можете изменить её в главном меню.", 
+                $"{Environment.NewLine}Вы можете изменить её в главном меню." +
+                $"{Environment.NewLine}<b>Подсказка:</b> {commandHint}",
                 cancellationToken: ct, parseMode: ParseMode.Html);
         }
     }
