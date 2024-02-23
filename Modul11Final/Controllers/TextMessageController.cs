@@ -25,19 +25,12 @@ namespace Modul11Final.Controllers
         public async Task Handle(Message message, CancellationToken ct)
         {
             Console.WriteLine($"Контроллер {GetType().Name} получил сообщение");
-            //await _telegramClient.SendTextMessageAsync(message.Chat.Id, $"Получено текстовое сообщение", cancellationToken: ct);
 
             switch (message.Text)
             {
                 case "/start":
                     // Объект, представляющий кноки
                     Buttons.InitButtons(out List<InlineKeyboardButton> buttons, ref Buttons.mainButtons);
-                    
-                    //var buttons = new List<InlineKeyboardButton>();
-                    //foreach (var button in Buttons.mainButtons)
-                    //{
-                    //    buttons.Add(InlineKeyboardButton.WithCallbackData(button.Text, button.Command));
-                    //}
 
                     // передаем кнопки вместе с сообщением (параметр ReplyMarkup)
                     await _telegramClient.SendTextMessageAsync(message.Chat.Id, $"<b> Наш бот умеет:</b>{Environment.NewLine}" +
@@ -50,6 +43,8 @@ namespace Modul11Final.Controllers
                     await _telegramClient.SendTextMessageAsync(message.Chat.Id, "Считалка", cancellationToken: ct);
                     break;
                 default:
+                    //string command = _memoryStorage.GetSession(callbackQuery.From.Id).Command;
+
                     await _telegramClient.SendTextMessageAsync(message.Chat.Id, "Кажется, здесь надо анализировать команду пользователя", cancellationToken: ct);
                     break;
             }
