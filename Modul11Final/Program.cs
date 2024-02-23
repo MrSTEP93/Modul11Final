@@ -41,6 +41,7 @@ namespace Modul11Final
  
             IConfiguration configuration = builder.Build();
             token = configuration["BotConfig:token"];
+            //6970731421:AAGJ3U6SaaDH_2EA_kfxMfQ9D9UYHRH28cc
             if (string.IsNullOrEmpty(token))
             {
                 Console.WriteLine("Ошибка чтения конфигурации");
